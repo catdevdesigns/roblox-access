@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dot Chase</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    canvas {
+      background-color: #f0f0f0;
+      display: block;
+    }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+
+<script>
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const player = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+radius: 10,
+    color: 'red'
+  };
+
+  const enemy = {
+    x: 100,
+    y: 100,
+    radius: 10,
+    color: 'green',
+    speed: 1.5
+  };
+
+  function drawDot(dot) {
+ctx.beginPath();
+  ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+    ctx.fillStyle = dot.color;
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  function moveEnemyTowardPlayer() {
+    const dx = player.x - enemy.x;
+    const dy = player.y - enemy.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > 1) {
+      enemy.x += (dx / distance) * enemy.speed;
+      enemy.y += (dy / distance) * enemy.speed;  
+}
+  }
+
+  function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    moveEnemyTowardPlayer();
+    drawDot(player);
+    drawDot(enemy);
+    requestAnimationFrame(update);
+  }
+
+  update();
+</script>
+</body>
+</html>
