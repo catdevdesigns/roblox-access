@@ -9,6 +9,6 @@
   "author": "YourName",
   "license": "MIT",
   "dependencies": {
-    "rbx-parser": "^1.0.0"   // or any parser library that supports .rbxm
+    "rbx-parser": "^1.0.0"
   }
   } 
