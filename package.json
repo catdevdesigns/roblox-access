@@ -1,0 +1,14 @@
+  {
+  "name": "rbxm-to-json",
+  "version": "1.0.0",
+  "description": "Convert Roblox .rbxm files to JSON and extract scripts",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "YourName",
+  "license": "MIT",
+  "dependencies": {
+    "rbx-parser": "^1.0.0"   // or any parser library that supports .rbxm
+  }
+  } 
