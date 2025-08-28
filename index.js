@@ -1,52 +1,51 @@
 const fs = require("fs");
 const path = require("path");
-const reader = require("rbx-reader");
+const { readFile } = require("rbx-reader");
 
-const filePath = path.join(__dirname, "rbxm", "easyPOS - easyNametags.rbxm");
+// Path to your RBXM file
+const rbxmPath = path.join(__dirname, "rbxm", "easyPOS - easyNametags.rbxm");
 
-// Check if file exists
-if (!fs.existsSync(filePath)) {
-    console.error(`File not found: ${filePath}`);
-    process.exit(1);
-}
+// Read and parse the RBXM file
+const rbxmData = fs.readFileSync(rbxmPath);
+const model = readFile(rbxmData); // returns a JS object representing the model
 
-// Read file as a buffer (binary)
-const buffer = fs.readFileSync(filePath);
+// Serializer to keep only important properties
+function serializeInstance(instance) {
+  const importantProps = [
+    "Anchored",
+    "Size",
+    "Position",
+    "Orientation",
+    "Transparency",
+    "Reflectance",
+    "Color",
+    "Material",
+    "Shape",
+    "CanCollide",
+    "Name"
+  ];
 
-// Parse Roblox model file
-const model = reader.parseBuffer(buffer);
-
-// Save full JSON output
-const outputPath = path.join(__dirname, "output.json");
-fs.writeFileSync(outputPath, JSON.stringify(model, null, 2));
-console.log(`✅ JSON saved to ${outputPath}`);
-
-// Extract scripts
-const scriptsDir = path.join(__dirname, "scripts");
-if (!fs.existsSync(scriptsDir)) fs.mkdirSync(scriptsDir);
-
-let counter = {};
-function extractScripts(obj) {
-    if (obj.ClassName && ["Script", "LocalScript", "ModuleScript"].includes(obj.ClassName)) {
-        let name = obj.Properties?.Name || "Script";
-        if (counter[name]) {
-            counter[name]++;
-            name += `_${counter[name]}`;
-        } else {
-            counter[name] = 1;
-        }
-        const sourceProp = obj.Properties?.Source;
-        if (sourceProp) {
-            fs.writeFileSync(path.join(scriptsDir, `${name}.lua`), sourceProp);
-        }
+  const usefulProps = {};
+  for (const [key, value] of Object.entries(instance.Properties || {})) {
+    if (importantProps.includes(key)) {
+      usefulProps[key] = value;
     }
-    if (obj.Children && Array.isArray(obj.Children)) {
-        obj.Children.forEach(extractScripts);
-    }
+  }
+
+  return {
+    Name: instance.Name,
+    ClassName: instance.ClassName,
+    Properties: usefulProps,
+    Children: instance.Children?.map(serializeInstance) || []
+  };
 }
 
-if (Array.isArray(model)) {
-    model.forEach(extractScripts);
-}
+// Serialize the model
+const jsonModel = serializeInstance(model);
 
-console.log(`✅ Scripts extracted to ${scriptsDir}`);
+// Write the readable JSON file
+const outputPath = path.join(__dirname, "easyPOS-easyNametags.json");
+fs.writeFileSync(outputPath, JSON.stringify(jsonModel, null, 2));
+
+console.log("✅ Exported JSON to", outputPath);
+T
