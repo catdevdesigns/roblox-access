@@ -21,7 +21,8 @@ function serializeInstance(instance) {
     "Material",
     "Shape",
     "CanCollide",
-    "Name"
+    "Name",
+    "Source" // include script source if present
   ];
 
   const usefulProps = {};
@@ -42,8 +43,14 @@ function serializeInstance(instance) {
 // Serialize the model
 const jsonModel = serializeInstance(model);
 
-// Write the readable JSON file
+// Convert to formatted JSON string
+const jsonString = JSON.stringify(jsonModel, null, 2);
+
+// Write the JSON to a file
 const outputPath = path.join(__dirname, "easyPOS-easyNametags.json");
-fs.writeFileSync(outputPath, JSON.stringify(jsonModel, null, 2));
+fs.writeFileSync(outputPath, jsonString);
+
+// Print the JSON to the console
+console.log(jsonString);
 
 console.log("✅ Exported JSON to", outputPath);
