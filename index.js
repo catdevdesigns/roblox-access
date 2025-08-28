@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const reader = require("rbx-reader");
 
-const filePath = path.join(__dirname, "easyPOS - easyNametags.rbxm");
+const filePath = path.join(__dirname, "rbxm", "easyPOS - easyNametags.rbxm");
 
 // Check if file exists
 if (!fs.existsSync(filePath)) {
