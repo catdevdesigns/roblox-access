@@ -5,11 +5,10 @@ const { readFile } = require("rbx-reader");
 // Path to your RBXM file
 const rbxmPath = path.join(__dirname, "rbxm", "easyPOS - easyNametags.rbxm");
 
-// Read and parse the RBXM file
-const rbxmData = fs.readFileSync(rbxmPath);
-const model = readFile(rbxmData); // returns a JS object representing the model
+// Read and parse the RBXM file directly
+const model = readFile(rbxmPath);
 
-// Serializer to keep only important properties
+// Serializer to keep only important properties for rebuilding
 function serializeInstance(instance) {
   const importantProps = [
     "Anchored",
@@ -48,4 +47,3 @@ const outputPath = path.join(__dirname, "easyPOS-easyNametags.json");
 fs.writeFileSync(outputPath, JSON.stringify(jsonModel, null, 2));
 
 console.log("✅ Exported JSON to", outputPath);
-T
